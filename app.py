@@ -23,20 +23,6 @@ selection = st.sidebar.radio(
 if selection == "Dashboard":
     st.title("📚 Library Dashboard")
     st.write("Welcome to the library management system!")
-
-    st.header("Popular Library Books")
-
-    # Sort by 'Popularity' to show popular books
-    popular_books = df_books.sort_values(by='Popularity', ascending=False).head(5)
-    st.dataframe(popular_books[['Book ID', 'Book Name', 'Author', 'Popularity', 'Copies Available']])
-
-    st.header("All Books Available")
-    st.dataframe(df_books[['Book ID', 'Book Name', 'Author', 'Popularity', 'Genre', 'Copies Available']])
-
-    # You could add more charts here, e.g., books by genre
-    st.subheader("Books by Genre")
-    genre_counts = df_books['Genre'].value_counts()
-    st.bar_chart(genre_counts)
     
 
 # --- Issue Book Page ---
