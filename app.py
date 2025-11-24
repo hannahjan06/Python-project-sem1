@@ -32,23 +32,17 @@ elif selection == "Issue Book":
     st.write("Select a book to issue to a member.")
 
     issue_book_title = st.text_input("Enter the name of the book you want to search: ")
-    issue_book_title = issue_book_title.strip()
-    issue_book_title = issue_book_title.title()
+    issue_book_title = issue_book_title.strip().title()
 
-    if st.button("Return Book"):
+    if st.button("Search Book"):
         if issue_book_title:
-            if issue_book_title in book_data['Book Name'].tolist():
-                book_index = book_data[book_data['Book Name'] == issue_book_title].index[0]
-                if book_data.loc[book_index, 'Copies Available'] == 0:
-                    st.warning(f"'{issue_book_title}' is currently not available for issue.")
-                else:
-                    book_data.loc[book_index, 'Copies Available'] -= 1
-                    st.success(f"'{issue_book_title}' has been returned successfully!")
-                    st.rerun()
+            if issue_book_title in book_data.index:
+                st.success(f"Book '{issue_book_title}' found in the library!")
+                st.dataframe(book_data.loc[[issue_book_title]])
             else:
-                st.error(f"Book with title '{issue_book_title}' not found in our records.")
+                st.error(f"This book '{issue_book_title}' is not present in the library as of now.")
         else:
-            st.warning("Please enter a book title to issue")
+            st.warning("Please enter a book title to search.")
     
 
 # --- Return Book Page ---
@@ -57,23 +51,17 @@ elif selection == "Return Book":
     st.write("Enter the book title to mark it as returned.")
 
     return_book_title = st.text_input("Enter the name of the book you want to search: ")
-    return_book_title = return_book_title.strip()
-    return_book_title = return_book_title.title()
+    return_book_title = return_book_title.strip().title()
 
-    if st.button("Return Book"):
+    if st.button("Search Book"):
         if return_book_title:
-            if return_book_title in book_data['Book Name'].tolist():
-                book_index = book_data[book_data['Book Name'] == return_book_title].index[0]
-                if book_data.loc[book_index, 'Copies Available'] < book_data.loc[book_index, 'Total Copies']:
-                    book_data.loc[book_index, 'Copies Available'] += 1
-                    st.success(f"'{return_book_title}' has been returned successfully!")
-                    st.rerun()
-                else:
-                    st.warning(f"'{return_book_title}' was not recorded as issued or already has all copies available.")
+            if return_book_title in book_data.index:
+                st.success(f"Book '{return_book_title}' found in the library!")
+                st.dataframe(book_data.loc[[return_book_title]])
             else:
-                st.error(f"Book with title '{return_book_title}' not found in our records.")
+                st.error(f"This book '{return_book_title}' is not present in the library as of now.")
         else:
-            st.warning("Please enter a book title to return.")
+            st.warning("Please enter a book title to search.")
     
 
 # --- Donate Book Page ---
