@@ -1,14 +1,15 @@
 import streamlit as st
 import pandas as pd
-global df_books
+global book_data
 
 # --- Data Simulation (In a real app, this would come from a database) ---
 @st.cache_data
 def load_data():
-    data = pd.read_csv('library_books.csv')
-    return data
+    book_data = pd.read_csv('library_books.csv')
+    donated_data = pd.read_csv('donated_books.csv')
+    return book_data, donated_data
 
-df_books = load_data()
+book_data, donated_data = load_data()
 
 # --- Streamlit App Structure ---
 st.set_page_config(layout="wide")
@@ -36,12 +37,12 @@ elif selection == "Issue Book":
 
     if st.button("Return Book"):
         if issue_book_title:
-            if issue_book_title in df_books['Book Name'].tolist():
-                book_index = df_books[df_books['Book Name'] == issue_book_title].index[0]
-                if df_books.loc[book_index, 'Copies Available'] == 0:
+            if issue_book_title in book_data['Book Name'].tolist():
+                book_index = book_data[book_data['Book Name'] == issue_book_title].index[0]
+                if book_data.loc[book_index, 'Copies Available'] == 0:
                     st.warning(f"'{issue_book_title}' is currently not available for issue.")
                 else:
-                    df_books.loc[book_index, 'Copies Available'] -= 1
+                    book_data.loc[book_index, 'Copies Available'] -= 1
                     st.success(f"'{issue_book_title}' has been returned successfully!")
                     st.rerun()
             else:
@@ -61,10 +62,10 @@ elif selection == "Return Book":
 
     if st.button("Return Book"):
         if return_book_title:
-            if return_book_title in df_books['Book Name'].tolist():
-                book_index = df_books[df_books['Book Name'] == return_book_title].index[0]
-                if df_books.loc[book_index, 'Copies Available'] < df_books.loc[book_index, 'Total Copies']:
-                    df_books.loc[book_index, 'Copies Available'] += 1
+            if return_book_title in book_data['Book Name'].tolist():
+                book_index = book_data[book_data['Book Name'] == return_book_title].index[0]
+                if book_data.loc[book_index, 'Copies Available'] < book_data.loc[book_index, 'Total Copies']:
+                    book_data.loc[book_index, 'Copies Available'] += 1
                     st.success(f"'{return_book_title}' has been returned successfully!")
                     st.rerun()
                 else:
@@ -78,31 +79,48 @@ elif selection == "Return Book":
 # --- Donate Book Page ---
 elif selection == "Donate Book":
     
-    st.title("🎁 Donate a New Book")
-    st.write("Help expand our collection by donating new books!")
+    st.title("🎁 Donate Books")
+    st.write("Share the joy of reading by donating books to our library!")
 
     with st.form("new_book_form"):
-        new_title = st.text_input("Book Title:")
-        new_author = st.text_input("Author:")
-        new_genre = st.selectbox("Genre:", df_books['Genre'].unique().tolist() + ["New Genre"])
+        new_name = st.text_input("Your Name")
+        new_email = st.text_input("Email Address")
+        new_phone = st.text_input("Phone Number")
+        new_title = st.text_input("Book Title")
+        new_author = st.text_input("Author")
+        new_genre = st.selectbox("Genre:", book_data['Genre'].unique().tolist() + ["New Genre"])
         if new_genre == "New Genre":
             new_genre = st.text_input("Enter new genre:")
         num_copies = st.number_input("Number of Copies to Donate:", min_value=1, value=1)
-        submitted = st.form_submit_button("Add Book to Library")
+        new_notes = st.text_input("Additional Notes (Optional)")
+        submitted = st.form_submit_button("Submit Donation")
 
         if submitted:
             if new_title and new_author and new_genre and num_copies > 0:
-                new_book_id = df_books['Book ID'].max() + 1 if not df_books.empty else 1
+                new_book_id = book_data['Book ID'].max() + 1 if not book_data.empty else 1
                 new_book_data = {
                     'Book ID': new_book_id,
                     'Book Name  ': new_title,
                     'Author': new_author,
                     'Genre': new_genre,
+                    'Shelf Location': 'To Be Assigned',
+                    'Issued': False,
+                    'Popularity': 0,
                     'Copies Available': num_copies,
-                    'Total Copies': num_copies,
-                    'Popularity': 0
                 }
-                df_books = pd.concat([df_books, pd.DataFrame([new_book_data])], ignore_index=True)
+                new_donated_data = {
+                    'Name': new_name,
+                    'Email': new_email, 
+                    'Phone': new_phone,
+                    'Book ID': new_book_id,
+                    'Book Title': new_title,
+                    'Author': new_author,
+                    'Genre': new_genre,
+                    'Number of Copies': num_copies,
+                    'Notes': new_notes
+                }
+                book_data = pd.concat([book_data, pd.DataFrame([new_book_data])], ignore_index=True)
+                donated_data = pd.concat([donated_data, pd.DataFrame([new_donated_data])], ignore_index=True)
                 st.success(f"'{new_title}' ({num_copies} copies) added to the library! Thank you for your donation.")
                 st.rerun()
             else:
