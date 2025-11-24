@@ -92,7 +92,6 @@ elif selection == "Donate Book":
 
         if submitted:
             if new_title and new_author and new_genre and num_copies > 0:
-                # Generate a new unique Book ID
                 new_book_id = df_books['Book ID'].max() + 1 if not df_books.empty else 1
                 new_book_data = {
                     'Book ID': new_book_id,
@@ -105,9 +104,6 @@ elif selection == "Donate Book":
                 }
                 df_books = pd.concat([df_books, pd.DataFrame([new_book_data])], ignore_index=True)
                 st.success(f"'{new_title}' ({num_copies} copies) added to the library! Thank you for your donation.")
-                st.rerun() # Rerun to update the dashboard
+                st.rerun()
             else:
                 st.error("Please fill in all book details and specify at least one copy.")
-                
-    # Image for donating books
-    st.write("A person donating books to a library:")
