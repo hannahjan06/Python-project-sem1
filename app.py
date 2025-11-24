@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 global book_data
 
+st.cache_data.clear()
+st.cache_resource.clear()
+
 # --- Data Simulation (In a real app, this would come from a database) ---
 @st.cache_data
 def load_data():
@@ -20,13 +23,14 @@ selection = st.sidebar.radio(
     ["Dashboard", "Issue Book", "Return Book", "Donate Book"]
 )
 
-# --- Dashboard Page ---
+# ------- Disha -------
+# Dashboard Page
 if selection == "Dashboard":
     st.title("📚 Library Dashboard")
     st.write("Welcome to the library management system!")
     
-
-# --- Issue Book Page ---
+# ------- Harmehar -------
+# Issue Book Page
 elif selection == "Issue Book":
     st.title("📖 Issue a Book")
     st.write("Select a book to issue to a member.")
@@ -36,16 +40,16 @@ elif selection == "Issue Book":
 
     if st.button("Search Book"):
         if issue_book_title:
-            if issue_book_title in book_data.index:
+            if issue_book_title in book_data['Book Name'].tolist():
                 st.success(f"Book '{issue_book_title}' found in the library!")
-                st.dataframe(book_data.loc[[issue_book_title]])
+                st.dataframe(book_data[book_data['Book Name'] == issue_book_title])
             else:
                 st.error(f"This book '{issue_book_title}' is not present in the library as of now.")
         else:
             st.warning("Please enter a book title to search.")
     
 
-# --- Return Book Page ---
+# Return Book Page
 elif selection == "Return Book":
     st.title("↩️ Return a Book")
     st.write("Enter the book title to mark it as returned.")
@@ -55,16 +59,16 @@ elif selection == "Return Book":
 
     if st.button("Search Book"):
         if return_book_title:
-            if return_book_title in book_data.index:
+            if return_book_title in book_data['Book Name'].tolist():
                 st.success(f"Book '{return_book_title}' found in the library!")
-                st.dataframe(book_data.loc[[return_book_title]])
+                st.dataframe(book_data[book_data['Book Name'] == return_book_title])
             else:
                 st.error(f"This book '{return_book_title}' is not present in the library as of now.")
         else:
             st.warning("Please enter a book title to search.")
     
-
-# --- Donate Book Page ---
+# ------- Hannah -------
+# Donate Book Page
 elif selection == "Donate Book":
     
     st.title("🎁 Donate Books")
