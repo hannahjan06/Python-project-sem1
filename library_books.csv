@@ -1,0 +1,31 @@
+Book ID,Book Name,Book Code,Author,Genre,Shelf Location,Issued,Popularity,Copies Available
+BK0001,The Great Gatsby,B001,F. Scott Fitzgerald,Classic,A1,No,150,3
+BK0002,To Kill a Mockingbird,B002,Harper Lee,Classic,A2,Yes,190,2
+BK0003,1984,B003,George Orwell,Dystopian,A3,No,175,4
+BK0004,Pride and Prejudice,B004,Jane Austen,Romance,A4,Yes,210,2
+BK0005,The Catcher in the Rye,B005,J.D. Salinger,Classic Fiction,A5,No,120,3
+BK0006,The Hobbit,B006,J.R.R. Tolkien,Fantasy,B1,Yes,250,1
+BK0007,Fahrenheit 451,B007,Ray Bradbury,Dystopian,B2,No,140,3
+BK0008,Jane Eyre,B008,Charlotte Brontë,Gothic Romance,B3,No,130,2
+BK0009,The Lord of the Rings,B009,J.R.R. Tolkien,Fantasy,B4,Yes,300,2
+BK0010,Animal Farm,B010,George Orwell,Political Fiction,B5,No,165,4
+BK0011,The Alchemist,B011,Paulo Coelho,Philosophical Fiction,C1,Yes,220,3
+BK0012,Moby-Dick,B012,Herman Melville,Literary Classic,C2,No,95,2
+BK0013,War and Peace,B013,Leo Tolstoy,Historical Fiction,C3,No,110,2
+BK0014,Crime and Punishment,B014,Fyodor Dostoevsky,Classic Philosophy,C4,Yes,200,2
+BK0015,The Odyssey,B015,Homer,Mythology,C5,No,160,3
+BK0016,Wuthering Heights,B016,Emily Brontë,Gothic Fiction,D1,No,140,2
+BK0017,Brave New World,B017,Aldous Huxley,Dystopian,D2,Yes,185,3
+BK0018,The Kite Runner,B018,Khaled Hosseini,Contemporary Fiction,D3,No,170,4
+BK0019,The Book Thief,B019,Markus Zusak,Historical Fiction,D4,No,155,3
+BK0020,Gone with the Wind,B020,Margaret Mitchell,Historical Romance,D5,Yes,145,2
+BK0021,The Chronicles of Narnia,B021,C.S. Lewis,Fantasy,E1,No,210,4
+BK0022,Les Misérables,B022,Victor Hugo,Classic Literature,E2,Yes,230,2
+BK0023,A Tale of Two Cities,B023,Charles Dickens,Classic,E3,No,175,3
+BK0024,The Picture of Dorian Gray,B024,Oscar Wilde,Gothic Fiction,E4,No,160,3
+BK0025,Dracula,B025,Bram Stoker,Horror,E5,Yes,185,2
+BK0026,The Da Vinci Code,B026,Dan Brown,Thriller,F1,Yes,280,3
+BK0027,Harry Potter and the Sorcerer's Stone,B027,J.K. Rowling,Fantasy,F2,Yes,350,5
+BK0028,The Fault in Our Stars,B028,John Green,Young Adult,F3,No,190,4
+BK0029,The Shining,B029,Stephen King,Horror,F4,No,175,3
+BK0030,Sapiens,B030,Yuval Noah Harari,Non-Fiction,F5,Yes,300,2
