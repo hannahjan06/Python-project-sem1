@@ -135,6 +135,15 @@ elif selection == "Issue Book":
 
                         st.markdown("---")
                         st.subheader(f"💡 Since you like {current_genre}, you might also like:")
+
+                        if not recommendations.empty:
+                            cols = st.columns(3)
+                            for i, (index, row) in enumerate(recommendations.iterrows()):
+                                with cols[i % 3]:
+                                    st.info(f"**{row['Book Name']}**\n\n👤 {row['Author']}\n\n🔥 Popularity: {row['Popularity']}")
+                        else:
+                            st.write("No other books currently available in this genre.")
+
                         st.rerun()
 
                 else:
