@@ -82,77 +82,77 @@ elif selection == "Issue Book":
 
     if issue_book:
         if issue_book in book_data['Book Name'].tolist():
-            st.write(book_data.loc[issue_book == book_data['Book Name']])
+            current_book_info = book_data.loc[book_data['Book Name'] == issue_book]
+            st.write(current_book_info)
             
             ques = st.radio("Enter whether you want to issue this book or not:", ("No", "Yes"))
             
-            if st.button("Submit"):
-                if ques == "Yes":   
-                    member_ID = st.text_input('Member ID')
-                    member_name = st.text_input('Member Name')
-                    book_ID = st.text_input('Book ID')
-                    book_name = st.text_input('Book Name')
-                    issue_date = st.date_input('Issue Date')
-                    duration_days = st.number_input('Duration (in days)', min_value=1, value=14)
-                    due_date = issue_date + pd.Timedelta(days=duration_days)
-
-                    if st.button("Confirm Issue"):
-                        new_issue = {
-                            'Member ID': member_ID,
-                            'Member Name': member_name,
-                            'Book ID': book_ID,
-                            'Book Name': book_name,
-                            'Issue Date': issue_date,
-                            'Due Date': due_date,
-                            'Returned': False
-                        }
-
-                        st.write("Book issued successfully!")
-                        st.write(new_issue)
-
-                        issue_data = pd.concat([issue_data, pd.DataFrame([new_issue])], ignore_index=True)
-
-                        mask = book_data['Book Name'] == issue_book
-                        book_data.loc[mask, 'Issued'] = True
-                        book_data.loc[mask, 'Popularity'] += 1
-
-                        issue_data.to_csv("issue_books.csv", index=False)
-                        book_data.to_csv("library_books.csv", index=False)
+            if ques == "Yes":
+                with st.form("issue_book_form"):
+                    st.subheader("Issue Details")
                     
-                        st.success(f"'{issue_book}' issued successfully!")  
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        member_ID = st.text_input('Member ID')
+                        book_ID = st.text_input('Book ID', value=current_book_info['Book ID'].values[0])
+                        issue_date = st.date_input('Issue Date')
+                    
+                    with col2:
+                        member_name = st.text_input('Member Name')
+                        book_name = st.text_input('Book Name', value=issue_book)
+                        duration_days = st.number_input('Duration (in days)', min_value=1, value=14)
+                    
+                    submitted = st.form_submit_button("Confirm Issue")
 
-                        # --- Recommendation System ---
+                if submitted:
+                    due_date = issue_date + pd.Timedelta(days=duration_days)
+                    
+                    new_issue = {
+                        'Member ID': member_ID,
+                        'Member Name': member_name,
+                        'Book ID': book_ID,
+                        'Book Name': book_name,
+                        'Issue Date': issue_date,
+                        'Due Date': due_date,
+                        'Returned': False
+                    }
 
-                        current_genre = book_data.loc[book_data['Book Name'] == issue_book, 'Genre'].values[0]
-                        search_book = issue_book
-                        
-                        recommendations = book_data[
-                            (book_data['Genre'] == current_genre) & 
-                            (book_data['Book Name'] != search_book) &
-                            (book_data['Issued'] == False) &
-                            (book_data['Copies Available'] > 0)
-                        ].sort_values(by='Popularity', ascending=False).head(3)
+                    issue_data = pd.concat([issue_data, pd.DataFrame([new_issue])], ignore_index=True)
+                    issue_data.to_csv("issue_books.csv", index=False)
 
-                        st.markdown("---")
-                        st.subheader(f"💡 Since you like {current_genre}, you might also like:")
+                    mask = book_data['Book Name'] == issue_book
+                    book_data.loc[mask, 'Issued'] = True
+                    book_data.loc[mask, 'Popularity'] += 1
+                    book_data.to_csv("library_books.csv", index=False)
+                
+                    st.success(f"'{issue_book}' issued successfully!")  
 
-                        if not recommendations.empty:
-                            cols = st.columns(3)
-                            for i, (index, row) in enumerate(recommendations.iterrows()):
-                                with cols[i % 3]:
-                                    st.info(f"**{row['Book Name']}**\n\n👤 {row['Author']}\n\n🔥 Popularity: {row['Popularity']}")
-                        else:
-                            st.write("No other books currently available in this genre.")
+                    # --- Recommendation System ---
+                    current_genre = book_data.loc[book_data['Book Name'] == issue_book, 'Genre'].values[0]
+                    
+                    recommendations = book_data[
+                        (book_data['Genre'] == current_genre) & 
+                        (book_data['Book Name'] != issue_book) &
+                        (book_data['Issued'] == False) &
+                        (book_data['Copies Available'] > 0)
+                    ].sort_values(by='Popularity', ascending=False).head(3)
 
+                    st.markdown("---")
+                    st.subheader(f"Since you like {current_genre}, you might also like:")
+
+                    if not recommendations.empty:
+                        cols = st.columns(3)
+                        for i, (index, row) in enumerate(recommendations.iterrows()):
+                            with cols[i % 3]:
+                                st.info(f"**{row['Book Name']}**\n\n👤 {row['Author']}\n\n🔥 Popularity: {row['Popularity']}")
+                    else:
+                        st.write("No other books currently available in this genre.")
+
+                    if st.button("Clear and Continue"):
                         st.rerun()
-
-                else:
-                    st.info("Book was not issued.")
-                    st.rerun()
 
         else:
             st.error("This book is not present in the library as of now.")
-            st.rerun()
     
 
 # --- Return Book Page ---
@@ -163,28 +163,35 @@ elif selection == "Return Book":
     member_id = st.text_input("Enter Member ID").strip()
 
     if member_id:
+        issue_data['Member ID'] = issue_data['Member ID'].astype(str)
+
         if member_id in issue_data['Member ID'].tolist():
-            row = issue_data[issue_data['Member ID'] == member_id]
-            st.write("Book details:")
-            st.write("Review the details before processing return")
-            st.write(row)
+            row = issue_data[(issue_data['Member ID'] == member_id) & (issue_data['Returned'] == False)]
+            
+            if not row.empty:
+                st.write("Book details:")
+                st.write("Review the details before processing return")
+                st.write(row)
 
-            if st.button("Process Return"):
-                issue_data.loc[issue_data['Member ID'] == member_id, 'Returned'] = True
+                if st.button("Process Return"):
+                    issue_idx = row.index[0]
+                    issue_data.at[issue_idx, 'Returned'] = True
 
-                book_id = row.iloc[0]['Book ID']
-                book_data.loc[book_data['Book ID'] == book_id, 'Issued'] = False
+                    book_id = row.iloc[0]['Book ID']
+                    
+                    book_data['Book ID'] = book_data['Book ID'].astype(str)
+                    book_data.loc[book_data['Book ID'] == str(book_id), 'Issued'] = False
 
-                st.success("Book returned successfully!")
+                    st.success("Book returned successfully!")
 
-                issue_data.to_csv("issue_books.csv", index=False)
-                book_data.to_csv("library_books.csv", index=False)
+                    issue_data.to_csv("issue_books.csv", index=False)
+                    book_data.to_csv("library_books.csv", index=False)
 
-                st.rerun()
+            else:
+                st.warning("Member found, but they have no pending returns.")
         else:
             st.error("No issued book found for this Member ID.")
-            st.rerun()
-    
+
 # Donate Book Page
 elif selection == "Donate Book":
     
@@ -235,6 +242,5 @@ elif selection == "Donate Book":
                 donated_data.to_csv("donated_books.csv", index=False)
 
                 st.success(f"'{new_title}' ({num_copies} copies) added to the library! Thank you for your donation.")
-                st.rerun()
             else:
                 st.error("Please fill in all book details and specify at least one copy.")

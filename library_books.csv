@@ -1,30 +1,32 @@
-Book ID,Book Name,Author,Genre,Shelf Location,Issued,Popularity,Copies Available
-BK0001,The Great Gatsby,F. Scott Fitzgerald,Classic,A1,False,150,3
-BK0002,To Kill a Mockingbird,Harper Lee,Classic,A2,True,190,2
-BK0005,The Catcher in the Rye,J.D. Salinger,Classic Fiction,A3,False,120,3
-BK0022,Les Misérables,Victor Hugo,Classic Literature,A4,True,230,2
-BK0014,Crime and Punishment,Fyodor Dostoevsky,Classic Philosophy,A5,True,200,2
-BK0018,The Kite Runner,Khaled Hosseini,Contemporary Fiction,A6,False,170,4
-BK0003,1984,George Orwell,Dystopian,A7,False,175,4
-BK0007,Fahrenheit 451,Ray Bradbury,Dystopian,A8,False,140,3
-BK0017,Brave New World,Aldous Huxley,Dystopian,A9,True,185,3
-BK0006,The Hobbit,J.R.R. Tolkien,Fantasy,B1,True,250,1
-BK0009,The Lord of the Rings,J.R.R. Tolkien,Fantasy,B2,True,300,2
-BK0021,The Chronicles of Narnia,C.S. Lewis,Fantasy,B3,False,210,4
-BK0027,Harry Potter and the Sorcerer's Stone,J.K. Rowling,Fantasy,B4,True,350,5
-BK0016,Wuthering Heights,Emily Brontë,Gothic Fiction,B5,False,140,2
-BK0024,The Picture of Dorian Gray,Oscar Wilde,Gothic Fiction,B6,False,160,3
-BK0008,Jane Eyre,Charlotte Brontë,Gothic Romance,B7,False,130,2
-BK0013,War and Peace,Leo Tolstoy,Historical Fiction,C1,False,110,2
-BK0019,The Book Thief,Markus Zusak,Historical Fiction,C2,False,155,3
-BK0020,Gone with the Wind,Margaret Mitchell,Historical Romance,C3,True,145,2
-BK0029,The Shining,Stephen King,Horror,C4,False,175,3
-BK0025,Dracula,Bram Stoker,Horror,C5,True,185,2
-BK0012,Moby-Dick,Herman Melville,Literary Classic,C6,False,95,2
-BK0015,The Odyssey,Homer,Mythology,C7,False,160,3
-BK0030,Sapiens,Yuval Noah Harari,Non-Fiction,C8,True,300,2
-BK0011,The Alchemist,Paulo Coelho,Philosophical Fiction,C9,True,220,3
-BK0010,Animal Farm,George Orwell,Political Fiction,C10,False,165,4
-BK0004,Pride and Prejudice,Jane Austen,Romance,C11,True,210,2
-BK0026,The Da Vinci Code,Dan Brown,Thriller,C12,True,280,3
-BK0028,The Fault in Our Stars,John Green,Young Adult,C13,False,190,4
+Book ID,Book Name,Author,Genre,Shelf Location,Issued,Popularity,Copies Available,Book Name  
+BK0001,The Great Gatsby,F. Scott Fitzgerald,Classic,A1,False,150,3,
+BK0002,To Kill a Mockingbird,Harper Lee,Classic,A2,True,190,2,
+BK0005,The Catcher in the Rye,J.D. Salinger,Classic Fiction,A3,False,120,3,
+BK0022,Les Misérables,Victor Hugo,Classic Literature,A4,True,230,2,
+BK0014,Crime and Punishment,Fyodor Dostoevsky,Classic Philosophy,A5,True,200,2,
+BK0018,The Kite Runner,Khaled Hosseini,Contemporary Fiction,A6,False,170,4,
+BK0003,1984,George Orwell,Dystopian,A7,False,175,4,
+BK0007,Fahrenheit 451,Ray Bradbury,Dystopian,A8,False,140,3,
+BK0017,Brave New World,Aldous Huxley,Dystopian,A9,False,186,3,
+BK0006,The Hobbit,J.R.R. Tolkien,Fantasy,B1,True,250,1,
+BK0009,The Lord of the Rings,J.R.R. Tolkien,Fantasy,B2,True,300,2,
+BK0021,The Chronicles of Narnia,C.S. Lewis,Fantasy,B3,False,210,4,
+BK0027,Harry Potter and the Sorcerer's Stone,J.K. Rowling,Fantasy,B4,True,350,5,
+BK0016,Wuthering Heights,Emily Brontë,Gothic Fiction,B5,False,140,2,
+BK0024,The Picture of Dorian Gray,Oscar Wilde,Gothic Fiction,B6,False,160,3,
+BK0008,Jane Eyre,Charlotte Brontë,Gothic Romance,B7,False,130,2,
+BK0013,War and Peace,Leo Tolstoy,Historical Fiction,C1,False,110,2,
+BK0019,The Book Thief,Markus Zusak,Historical Fiction,C2,False,155,3,
+BK0020,Gone with the Wind,Margaret Mitchell,Historical Romance,C3,True,145,2,
+BK0029,The Shining,Stephen King,Horror,C4,False,175,3,
+BK0025,Dracula,Bram Stoker,Horror,C5,True,185,2,
+BK0012,Moby-Dick,Herman Melville,Literary Classic,C6,False,95,2,
+BK0015,The Odyssey,Homer,Mythology,C7,False,160,3,
+BK0030,Sapiens,Yuval Noah Harari,Non-Fiction,C8,True,300,2,
+BK0011,The Alchemist,Paulo Coelho,Philosophical Fiction,C9,True,220,3,
+BK0010,Animal Farm,George Orwell,Political Fiction,C10,False,165,4,
+BK0004,Pride and Prejudice,Jane Austen,Romance,C11,True,210,2,
+BK0026,The Da Vinci Code,Dan Brown,Thriller,C12,True,280,3,
+BK0028,The Fault in Our Stars,John Green,Young Adult,C13,False,190,4,
+BK0031,,,Fantasy,To Be Assigned,False,0,1,Percy Jackson
+BK0032,,N/A,Fantasy,To Be Assigned,False,0,1,Percy Jackson
