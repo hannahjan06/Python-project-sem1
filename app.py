@@ -6,7 +6,7 @@ global book_data
 st.cache_data.clear()
 st.cache_resource.clear()
 
-# --- Data Simulation (In a real app, this would come from a database) ---
+# --- Data Simulation ---
 @st.cache_data
 def load_data():
     book_data = pd.read_csv('library_books.csv')
@@ -15,6 +15,13 @@ def load_data():
     return book_data, donated_data, issue_data
 
 book_data, donated_data, issue_data = load_data()
+
+def generate_new_book_id(book_data):
+    if book_data.empty:
+        return "BK0001"
+    nums = book_data['Book ID'].str[2:].astype(int)
+    new_num = nums.max() + 1
+    return f"BK{new_num:04d}"
 
 # --- Streamlit App Structure ---
 st.set_page_config(layout="wide")
@@ -105,8 +112,12 @@ elif selection == "Issue Book":
 
                         issue_data = pd.concat([issue_data, pd.DataFrame([new_issue])], ignore_index=True)
 
-                        book_data.at[issue_book, 'Issued'] = "Yes"
-                        book_data.at[issue_book, 'Popularity'] += 1
+                        mask = book_data['Book Name'] == issue_book
+                        book_data.loc[mask, 'Issued'] = True
+                        book_data.loc[mask, 'Popularity'] += 1
+
+                        issue_data.to_csv("issue_books.csv", index=False)
+                        book_data.to_csv("library_books.csv", index=False)
                     
                         st.success(f"'{issue_book}' issued successfully!")  
                         st.rerun()
@@ -125,21 +136,29 @@ elif selection == "Return Book":
     st.title("↩️ Return a Book")
     st.write("Enter the book title to mark it as returned.")
 
-    return_book = st.text_input("Enter Member ID").strip()
+    member_id = st.text_input("Enter Member ID").strip()
 
-    if return_book:
-        if return_book in issue_data['Member ID'].tolist():
-            st.write('Book details:')
+    if member_id:
+        if member_id in issue_data['Member ID'].tolist():
+            row = issue_data[issue_data['Member ID'] == member_id]
+            st.write("Book details:")
             st.write("Review the details before processing return")
-            st.write(issue_data.loc[return_book == issue_data['Memeber ID']])
+            st.write(row)
 
             if st.button("Process Return"):
-                issue_data.at[return_book, 'Returned'] = True
-                st.write("Book returned successfully!")
-                st.rerun()
+                issue_data.loc[issue_data['Member ID'] == member_id, 'Returned'] = True
 
+                book_id = row.iloc[0]['Book ID']
+                book_data.loc[book_data['Book ID'] == book_id, 'Issued'] = False
+
+                st.success("Book returned successfully!")
+
+                issue_data.to_csv("issue_books.csv", index=False)
+                book_data.to_csv("library_books.csv", index=False)
+
+                st.rerun()
         else:
-            st.error("This book is not present in the library as of now.")
+            st.error("No issued book found for this Member ID.")
             st.rerun()
     
 # Donate Book Page
@@ -163,7 +182,7 @@ elif selection == "Donate Book":
 
         if submitted:
             if new_title and new_author and new_genre and num_copies > 0:
-                new_book_id = book_data['Book ID'].max() + 1 if not book_data.empty else 1
+                new_book_id = generate_new_book_id(book_data)
                 new_book_data = {
                     'Book ID': new_book_id,
                     'Book Name  ': new_title,
@@ -187,6 +206,10 @@ elif selection == "Donate Book":
                 }
                 book_data = pd.concat([book_data, pd.DataFrame([new_book_data])], ignore_index=True)
                 donated_data = pd.concat([donated_data, pd.DataFrame([new_donated_data])], ignore_index=True)
+
+                book_data.to_csv("library_books.csv", index=False)
+                donated_data.to_csv("donated_books.csv", index=False)
+
                 st.success(f"'{new_title}' ({num_copies} copies) added to the library! Thank you for your donation.")
                 st.rerun()
             else:
