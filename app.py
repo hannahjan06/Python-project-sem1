@@ -10,9 +10,10 @@ st.cache_resource.clear()
 def load_data():
     book_data = pd.read_csv('library_books.csv')
     donated_data = pd.read_csv('donated_books.csv')
-    return book_data, donated_data
+    issue_data = pd.read_csv('issue_books.csv')
+    return book_data, donated_data, issue_date
 
-book_data, donated_data = load_data()
+book_data, donated_data, issue_data = load_data()
 
 # --- Streamlit App Structure ---
 st.set_page_config(layout="wide")
@@ -23,30 +24,68 @@ selection = st.sidebar.radio(
     ["Dashboard", "Issue Book", "Return Book", "Donate Book"]
 )
 
-# ------- Disha -------
 # Dashboard Page
 if selection == "Dashboard":
     st.title("📚 Library Dashboard")
     st.write("Welcome to the library management system!")
+
+    max_book=book_data['Popularity'].max()
+    st.write("Most popular book(s):")
+    st.write(book_data[book_data['Popularity'] == max_book])
     
-# ------- Harmehar -------
 # Issue Book Page
 elif selection == "Issue Book":
     st.title("📖 Issue a Book")
     st.write("Select a book to issue to a member.")
 
-    issue_book_title = st.text_input("Enter the name of the book you want to search: ")
-    issue_book_title = issue_book_title.strip().title()
+    issue_book = st.text_input("Enter the name of the book you want to search").strip()
+    issue_book = issue_book.title()
 
-    if st.button("Search Book"):
-        if issue_book_title:
-            if issue_book_title in book_data['Book Name'].tolist():
-                st.success(f"Book '{issue_book_title}' found in the library!")
-                st.dataframe(book_data[book_data['Book Name'] == issue_book_title])
-            else:
-                st.error(f"This book '{issue_book_title}' is not present in the library as of now.")
+    if issue_book:
+        if issue_book in book_data['Book Name'].tolist():
+            st.write(book_data.loc[issue_book == book_data['Book Name']])
+            
+            ques = st.radio("Enter whether you want to issue this book or not:", ("No", "Yes"))
+            
+            if st.button("Submit"):
+                if ques == "Yes":   
+                    member_ID = st.text_input('Member ID')
+                    member_name = st.text_input('Member Name')
+                    book_ID = st.text_input('Book ID')
+                    book_name = st.text_input('Book Name')
+                    issue_date = st.date_input('Issue Date')
+                    duration_days = st.number_input('Duration (in days)', min_value=1, value=14)
+                    due_date = issue_date + pd.Timedelta(days=duration_days)
+
+                    if st.button("Confirm Issue"):
+                        new_issue = {
+                            'Member ID': member_ID,
+                            'Member Name': member_name,
+                            'Book ID': book_ID,
+                            'Book Name': book_name,
+                            'Issue Date': issue_date,
+                            'Due Date': due_date,
+                            'Returned': False
+                        }
+
+                        st.write("Book issued successfully!")
+                        st.write(new_issue)
+
+                        issue_data = pd.concat([issue_data, pd.DataFrame([new_issue])], ignore_index=True)
+
+                        book_data.at[issue_book, 'Issued'] = "Yes"
+                        book_data.at[issue_book, 'Popularity'] += 1
+                    
+                        st.success(f"'{issue_book}' issued successfully!")  
+                        st.rerun()
+
+                else:
+                    st.info("Book was not issued.")
+                    st.rerun()
+
         else:
-            st.warning("Please enter a book title to search.")
+            st.error("This book is not present in the library as of now.")
+            st.rerun()
     
 
 # Return Book Page
@@ -54,20 +93,22 @@ elif selection == "Return Book":
     st.title("↩️ Return a Book")
     st.write("Enter the book title to mark it as returned.")
 
-    return_book_title = st.text_input("Enter the name of the book you want to search: ")
-    return_book_title = return_book_title.strip().title()
+    return_book = st.text_input("Enter Memeber ID").strip()
 
-    if st.button("Search Book"):
-        if return_book_title:
-            if return_book_title in book_data['Book Name'].tolist():
-                st.success(f"Book '{return_book_title}' found in the library!")
-                st.dataframe(book_data[book_data['Book Name'] == return_book_title])
-            else:
-                st.error(f"This book '{return_book_title}' is not present in the library as of now.")
-        else:
-            st.warning("Please enter a book title to search.")
+    if return_book in issue_data['Memeber ID'].tolist():
+        st.write('Book details:')
+        st.write("Review the details before processing return")
+        st.write(issue_data.loc[return_book == issue_data['Memeber ID']])
+
+        if st.button("Process Return"):
+            issue_data.at[return_book, 'Returned'] = True
+            st.write("Book returned successfully!")
+            st.rerun()
+
+    else:
+        st.error("This book is not present in the library as of now.")
+        st.rerun()
     
-# ------- Hannah -------
 # Donate Book Page
 elif selection == "Donate Book":
     
