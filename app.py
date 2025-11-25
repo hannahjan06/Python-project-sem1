@@ -32,7 +32,7 @@ selection = st.sidebar.radio(
     ["Dashboard", "Issue Book", "Return Book", "Donate Book"]
 )
 
-# Dashboard Page
+# --- Dashboard Page ---
 if selection == "Dashboard":
     st.title("📚 Library Dashboard")
     st.write("Welcome to the library management system!")
@@ -72,7 +72,7 @@ if selection == "Dashboard":
         )
         st.plotly_chart(fig_status, use_container_width=True)
     
-# Issue Book Page
+# --- Issue Book Page ---
 elif selection == "Issue Book":
     st.title("📖 Issue a Book")
     st.write("Select a book to issue to a member.")
@@ -120,6 +120,21 @@ elif selection == "Issue Book":
                         book_data.to_csv("library_books.csv", index=False)
                     
                         st.success(f"'{issue_book}' issued successfully!")  
+
+                        # --- Recommendation System ---
+
+                        current_genre = book_data.loc[book_data['Book Name'] == issue_book, 'Genre'].values[0]
+                        search_book = issue_book
+                        
+                        recommendations = book_data[
+                            (book_data['Genre'] == current_genre) & 
+                            (book_data['Book Name'] != search_book) &
+                            (book_data['Issued'] == False) &
+                            (book_data['Copies Available'] > 0)
+                        ].sort_values(by='Popularity', ascending=False).head(3)
+
+                        st.markdown("---")
+                        st.subheader(f"💡 Since you like {current_genre}, you might also like:")
                         st.rerun()
 
                 else:
@@ -131,7 +146,7 @@ elif selection == "Issue Book":
             st.rerun()
     
 
-# Return Book Page
+# --- Return Book Page ---
 elif selection == "Return Book":
     st.title("↩️ Return a Book")
     st.write("Enter the book title to mark it as returned.")
