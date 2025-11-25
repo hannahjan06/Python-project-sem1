@@ -96,12 +96,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-To generate a `requirements.txt` file (only if needed):
-
-```bash
-pip freeze > requirements.txt
-```
-
 ---
 
 ## Running the Application
