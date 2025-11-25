@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 global book_data
 
 st.cache_data.clear()
@@ -11,7 +12,7 @@ def load_data():
     book_data = pd.read_csv('library_books.csv')
     donated_data = pd.read_csv('donated_books.csv')
     issue_data = pd.read_csv('issue_books.csv')
-    return book_data, donated_data, issue_date
+    return book_data, donated_data, issue_data
 
 book_data, donated_data, issue_data = load_data()
 
@@ -32,6 +33,37 @@ if selection == "Dashboard":
     max_book=book_data['Popularity'].max()
     st.write("Most popular book(s):")
     st.write(book_data[book_data['Popularity'] == max_book])
+
+    c1, c2 = st.columns(2)
+
+    with c1:
+        genre_counts = book_data['Genre'].value_counts().reset_index()
+        genre_counts.columns = ['Genre', 'Count']
+        
+        fig_genre = px.bar(
+            genre_counts, 
+            x='Genre', 
+            y='Count', 
+            color='Genre',
+            title="Books by Genre",
+            text_auto=True
+        )
+        st.plotly_chart(fig_genre, use_container_width=True)
+
+    with c2:
+        status_data = book_data['Issued'].map({True: 'Issued', False: 'Available'}).value_counts().reset_index()
+        status_data.columns = ['Status', 'Count']
+        
+        fig_status = px.pie(
+            status_data, 
+            values='Count', 
+            names='Status', 
+            title="Current Library Status",
+            hole=0.4,
+            color='Status',
+            color_discrete_map={'Issued':'#FF6F61', 'Available':'#6B5B95'}
+        )
+        st.plotly_chart(fig_status, use_container_width=True)
     
 # Issue Book Page
 elif selection == "Issue Book":
@@ -93,21 +125,22 @@ elif selection == "Return Book":
     st.title("↩️ Return a Book")
     st.write("Enter the book title to mark it as returned.")
 
-    return_book = st.text_input("Enter Memeber ID").strip()
+    return_book = st.text_input("Enter Member ID").strip()
 
-    if return_book in issue_data['Memeber ID'].tolist():
-        st.write('Book details:')
-        st.write("Review the details before processing return")
-        st.write(issue_data.loc[return_book == issue_data['Memeber ID']])
+    if return_book:
+        if return_book in issue_data['Member ID'].tolist():
+            st.write('Book details:')
+            st.write("Review the details before processing return")
+            st.write(issue_data.loc[return_book == issue_data['Memeber ID']])
 
-        if st.button("Process Return"):
-            issue_data.at[return_book, 'Returned'] = True
-            st.write("Book returned successfully!")
+            if st.button("Process Return"):
+                issue_data.at[return_book, 'Returned'] = True
+                st.write("Book returned successfully!")
+                st.rerun()
+
+        else:
+            st.error("This book is not present in the library as of now.")
             st.rerun()
-
-    else:
-        st.error("This book is not present in the library as of now.")
-        st.rerun()
     
 # Donate Book Page
 elif selection == "Donate Book":
