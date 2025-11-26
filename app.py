@@ -241,6 +241,6 @@ elif selection == "Donate Book":
                 book_data.to_csv("library_books.csv", index=False)
                 donated_data.to_csv("donated_books.csv", index=False)
 
-                st.success(f"'{new_title}' ({num_copies} copies) added to the library! Thank you for your donation.")
+                st.success(f"'{new_title}' ({num_copies} copies) added to t he library! Thank you for your donation.")
             else:
                 st.error("Please fill in all book details and specify at least one copy.")

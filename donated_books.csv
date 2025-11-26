@@ -1,3 +1,2 @@
-Name, Email, Phone, Book ID, Book Title, Author, Genre, Number of Copies, Additional Notes,Email,Phone,Book ID,Book Title,Author,Genre,Number of Copies,Notes
-Mike,,,,,,,,,mike@gmail.com,24562341,BK0031,Percy Jackson,,Fantasy,1.0,
-Mike,,,,,,,,,mike@gmail.com,24562341,BK0032,Percy Jackson,N/A,Fantasy,1.0,N/A
+Name,Email,Phone,Book ID,Book Title,Author,Genre,Number of Copies,Notes
+Mike,mike@gmail.com,24562341,BK0032,Percy Jackson,N/A,Fantasy,1.0,N/A
